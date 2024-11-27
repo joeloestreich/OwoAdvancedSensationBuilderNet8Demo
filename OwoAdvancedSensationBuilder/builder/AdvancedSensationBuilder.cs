@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OwoAdvancedSensationBuilderNet8.builder;
 using OWOGame;
 
-namespace OwoAdvancedSensationBuilderNet8.builder {
+namespace OwoAdvancedSensationBuilder.builder
+{
     public class AdvancedSensationBuilder {
 
         AdvancedStreamingSensation advanced = null;

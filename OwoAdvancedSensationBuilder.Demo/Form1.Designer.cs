@@ -1,4 +1,4 @@
-﻿namespace OwoAdvancedSensationBuilderNet8 {
+﻿namespace OwoAdvancedSensationBuilder.Demo {
     partial class Form1 {
         /// <summary>
         ///  Required designer variable.

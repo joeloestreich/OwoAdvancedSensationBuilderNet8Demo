@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OwoAdvancedSensationBuilderNet8.builder.AdvancedSensationBuilderMergeOptions;
 
-namespace OwoAdvancedSensationBuilderNet8.builder {
+namespace OwoAdvancedSensationBuilder.builder
+{
     public class AdvancedSensationService {
 
 
@@ -167,15 +167,15 @@ namespace OwoAdvancedSensationBuilderNet8.builder {
             return mergedSensation;
         }
 
-        private static Muscle[] actualMuscleMerge(Muscle[] newMuscles, Muscle[] origMuscles, MuscleMergeMode mode) {
+        private static Muscle[] actualMuscleMerge(Muscle[] newMuscles, Muscle[] origMuscles, AdvancedSensationBuilderMergeOptions.MuscleMergeMode mode) {
             switch (mode) {
-                case MuscleMergeMode.MAX:
+                case AdvancedSensationBuilderMergeOptions.MuscleMergeMode.MAX:
                     return actualMuscleMergeMax(newMuscles, origMuscles);
-                case MuscleMergeMode.MIN:
+                case AdvancedSensationBuilderMergeOptions.MuscleMergeMode.MIN:
                     return actualMuscleMergeMin(newMuscles, origMuscles);
-                case MuscleMergeMode.KEEP:
+                case AdvancedSensationBuilderMergeOptions.MuscleMergeMode.KEEP:
                     return actualMuscleMergeKeep(newMuscles, origMuscles);
-                case MuscleMergeMode.OVERRIDE:
+                case AdvancedSensationBuilderMergeOptions.MuscleMergeMode.OVERRIDE:
                     return actualMuscleMergeOverride(newMuscles, origMuscles);
                 default:
                     throw new Exception("Unknown Merge Type");

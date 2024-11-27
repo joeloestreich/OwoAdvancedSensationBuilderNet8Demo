@@ -1,15 +1,16 @@
-﻿using System;
+﻿using OwoAdvancedSensationBuilder.builder;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OwoAdvancedSensationBuilderNet8.builder.AdvancedSensationBuilderMergeOptions;
 using System.Timers;
-using OwoAdvancedSensationBuilderNet8.builder;
 using OWOGame;
+using OwoAdvancedSensationBuilderNet8.manager;
 
-namespace OwoAdvancedSensationBuilderNet8.manager {
+namespace OwoAdvancedSensationBuilder.manager
+{
     public class AdvancedSensationManager {
 
         private enum ProcessState { ADD, REMOVE, UPDATE }
@@ -153,7 +154,7 @@ namespace OwoAdvancedSensationBuilderNet8.manager {
             AdvancedSensationBuilder builder = null;
 
             AdvancedSensationBuilderMergeOptions mergeOptions = new AdvancedSensationBuilderMergeOptions();
-            mergeOptions.mode = MuscleMergeMode.MAX;
+            mergeOptions.mode = AdvancedSensationBuilderMergeOptions.MuscleMergeMode.MAX;
             mergeOptions.overwriteBaseSensation = true;
 
 
