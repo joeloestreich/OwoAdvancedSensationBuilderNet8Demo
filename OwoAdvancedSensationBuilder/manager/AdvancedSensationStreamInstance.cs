@@ -13,20 +13,19 @@ namespace OwoAdvancedSensationBuilder.manager {
         public enum RemoveInfo { MANUAL, FINISHED, REPLACED }
 
         public event SensationStreamInstanceEvent? LastCalculationOfCycle;
-        public event SensationStreamInstanceAddEvent? AfterAdd;
         public event SensationStreamInstanceEvent? AfterUpdate;
         public event SensationStreamInstanceRemoveEvent? AfterRemove;
 
         public string name { get; }
         internal int firstTick { get; set; }
-        internal bool overwriteManagerProcessList { get; set; }
+        internal bool replaceRunning { get; set; }
         public bool loop { get; set; }
         public bool blockLowerPrio { get; set; }
         public long timeStamp { get; internal set; }
 
         public AdvancedStreamingSensation sensation { get; private set; }
 
-        public AdvancedSensationStreamInstance(string name, Sensation sensation, bool overwriteManagerProcessList = false) {
+        public AdvancedSensationStreamInstance(string name, Sensation sensation, bool replaceRunning = true) {
             if (String.IsNullOrWhiteSpace(name)) {
                 this.name = Guid.NewGuid().ToString();
             } else {
@@ -35,7 +34,7 @@ namespace OwoAdvancedSensationBuilder.manager {
             loop = false;
             blockLowerPrio = false;
             firstTick = 0;
-            this.overwriteManagerProcessList = overwriteManagerProcessList;
+            this.replaceRunning = replaceRunning;
 
             this.sensation = new AdvancedSensationBuilder(sensation).getSensationForStream();
         }
@@ -68,10 +67,6 @@ namespace OwoAdvancedSensationBuilder.manager {
             firstTick = tick - ((tick - firstTick) % sensation.sensations.Count);
             sensation = new AdvancedSensationBuilder(newSensation).getSensationForStream();
             AfterUpdate?.Invoke(this);
-        }
-
-        internal void triggerAddEvent(AddInfo info) {
-            AfterAdd?.Invoke(this, info);
         }
 
         internal void triggerRemoveEvent(RemoveInfo info) {

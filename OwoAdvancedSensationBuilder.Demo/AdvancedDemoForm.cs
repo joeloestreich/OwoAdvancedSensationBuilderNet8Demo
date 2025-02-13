@@ -98,10 +98,10 @@ namespace OwoAdvancedSensationBuilder {
             AdvancedSensationManager manager = AdvancedSensationManager.getInstance();
             AdvancedSensationStreamInstance instance = new AdvancedSensationStreamInstance("Rain Snippet", getRandomRainSensation()).setLoop(true);
             instance.LastCalculationOfCycle += Instance_LastCalculationOfCycle;
-            instance.AfterAdd += (_, _) => updateVisualisationManager();
             instance.AfterRemove += (_, _) => updateVisualisationManager();
 
             manager.play(instance);
+            updateVisualisationManager();
         }
 
         private Sensation getRandomRainSensation() {
@@ -321,9 +321,9 @@ namespace OwoAdvancedSensationBuilder {
 
             AdvancedSensationManager manager = AdvancedSensationManager.getInstance();
             AdvancedSensationStreamInstance instance = new AdvancedSensationStreamInstance(selected, s);
-            instance.AfterAdd += (_, _) => updateVisualisationManager();
             instance.AfterRemove += (_, _) => updateVisualisationManager();
             manager.play(instance);
+            updateVisualisationManager();
         }
 
         private void btnLoopNow_Click(object sender, EventArgs e) {
@@ -332,9 +332,9 @@ namespace OwoAdvancedSensationBuilder {
 
             AdvancedSensationManager manager = AdvancedSensationManager.getInstance();
             AdvancedSensationStreamInstance instance = new AdvancedSensationStreamInstance(selected, s).setLoop(true);
-            instance.AfterAdd += (_, _) => updateVisualisationManager();
             instance.AfterRemove += (_, _) => updateVisualisationManager();
             manager.play(instance);
+            updateVisualisationManager();
         }
 
         private void btnStopNow_Click(object sender, EventArgs e) {

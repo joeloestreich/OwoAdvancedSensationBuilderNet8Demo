@@ -507,9 +507,9 @@ namespace OwoAdvancedSensationBuilder.Demo {
 
         private void interaction_playSensation(params AdvancedSensationStreamInstance[] instances) {
             foreach (AdvancedSensationStreamInstance instance in instances) {
-                instance.AfterAdd += Instance_AfterAdd;
                 instance.AfterRemove += Instance_AfterRemove;
                 AdvancedSensationManager.getInstance().play(instance);
+                Instance_AfterAdd(instance, AddInfo.NEW);
             }
         }
 
@@ -550,7 +550,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensation(AdvancedSensationStreamInstance instance) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(instance.name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(instance.name)) {
                 AdvancedSensationManager.getInstance().stopSensation(instance.name);
             } else {
                 interaction_playSensation(instance);
@@ -558,7 +558,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensationLoopFinish(AdvancedSensationStreamInstance instance) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(instance.name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(instance.name)) {
                 interaction_stopLooping(instance.name);
             } else {
                 interaction_playSensation(instance);
@@ -566,7 +566,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensationSliderLoop(Sensation sensation, string name, TrackBar slider) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(name)) {
                 interaction_stopLooping(name);
             } else {
                 AdvancedSensationStreamInstance instance = new AdvancedSensationStreamInstance(name, sensation)
