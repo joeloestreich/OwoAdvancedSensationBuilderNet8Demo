@@ -416,7 +416,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
                 "    throw new NotImplementedException();\r\n" +
                 "}\r\n" +
                 "\r\n" +
-                "private void Inst_OnFirstSensationTick(AdvancedSensationStreamInstance instance, bool firstCycle) {\r\n" +
+                "private void Instance_OnFirstSensationTick(AdvancedSensationStreamInstance instance, bool firstCycle) {\r\n" +
                 "   throw new NotImplementedException();\r\n" +
                 "}"));
 
