@@ -45,8 +45,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
 
             flowIntro.Controls.Add(new HeaderSection("The Builder"));
             flowIntro.Controls.Add(new TextSection("The Builder is the part that transforms a Sensation into an advanced Sensation. This includes " +
-                "transforming the actual intensity and the per Muscle intensity into the per muscle intensity as well as calculating the intensity in case of " +
-                "RampUp and RampDown."));
+                "transforming the actual intensity, the per Muscle intensity as well as calculating the intensity in case of RampUp and RampDown for each Muscle in the new advanced Sensation."));
             flowIntro.Controls.Add(new TextSection("Additionally it also allows to modify and combine Sensations."));
 
             flowIntro.Controls.Add(new HeaderSection("The Manager"));
@@ -125,7 +124,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
                 "AdvancedSensationManager.getInstance().playOnce(sensation);\r\n" +
                 "AdvancedSensationManager.getInstance().stopAll();"));
 
-            flowFeatures.Controls.Add(new TextSection("Do keep in mind though, that OWO (currently) wont allow to load BakedSensations by Code and thus can't " +
+            flowFeatures.Controls.Add(new TextSection("Do keep in mind though, that OWO (currently) won't allow to load BakedSensations by Code and thus can't " +
                 "play those by the Manager. If your usecase requires BakedSensations the Manager may require heavy planning. Should OWO ever decide to make " +
                 "BakedSensations loadable by Code this probably wouldn't be a problem anymore."));
 
@@ -382,28 +381,26 @@ namespace OwoAdvancedSensationBuilder.Demo {
             flowFeatures.Controls.Add(new HeaderSection("Event handling"));
             flowFeatures.Controls.Add(new TextSection("The Instance offeres multiple Events, which can eg. help to modify the Sensation or Sync up the Sensations " +
                 "with external Code more easily."));
-            flowFeatures.Controls.Add(new TextSection("AfterAdd is called after a Sensation is added. If the manager is already running it could take up to 0.1 " +
-                "Seconds. If you add multiple Instances with the same name at once it could happen that you wont get the same count of events as play calls, " +
-                "as you can't add multiple Sensations of the same name in the same manager tick. Following Instances will either get ignored or overwrite the " +
-                "queued Instance. AddInfo contains information of if the Instance got newly added or replaced an existing Instance."));
             flowFeatures.Controls.Add(new TextSection("AfterUpdate is called after a Sensation is updated."));
             flowFeatures.Controls.Add(new TextSection("AfterRemove is called after a Sensation is removed. RemoveInfo contains information of if the Instance " +
-                "got removed manually, finished playing or if it got replaced by a new play call"));
+                "got removed manually, finished playing or if it got replaced by a new play call."));
             flowFeatures.Controls.Add(new TextSection("LastCalculationOfCycle is called right before the last part of the Sensation is played. For looping " +
                 "Sensations this gets called on every loop. It could for example trigger an update for randomized Sensations like rain. " +
-                "In case of looped Sensation it takes about 0.1 seconds before the loop starts from the beginning and calling an update or a remove wont affect " +
+                "In case of looped Sensation it takes about 0.1 seconds before the loop starts from the beginning and calling an update or a remove won't affect " +
                 "this last Sensation part, but the next one to be played when it restarts."));
+            flowFeatures.Controls.Add(new TextSection("OnFirstSensationTick is called after a Sensation started playing. For looping Sensations this gets called on every loop. " +
+                "If the manager is already running it could take up to 0.1 Seconds, between adding and triggering this event. " +
+                "If you add multiple Instances with the same name at once it could happen that you won't get the same count of events as play calls, " +
+                "as you can't add multiple Sensations of the same name in the same manager tick. Following Instances will either get ignored or overwrite the queued Instance. " +
+                "As looping Sensations call this Event on each repeat, the boolean 'firstCycle' provides Information regarding of if this would be the first time the event triggered for this Sensation. " +
+                "Just as LastCalculationOfCycle, changes to this instance won't be reflected until the next Tick."));
+
             flowFeatures.Controls.Add(new CodeSection(
                 "public void prepareInstanceEvents(AdvancedSensationStreamInstance instance) {\r\n" +
-                "    instance.AfterAdd += Instance_AfterAdd;\r\n" +
                 "    instance.AfterUpdate += Instance_AfterUpdate;\r\n" +
                 "    instance.AfterRemove += Instance_AfterRemove;\r\n" +
                 "    instance.LastCalculationOfCycle += Instance_LastCalculationOfCycle;\r\n" +
-                "}\r\n" +
-                "\r\n" +
-                "private void Instance_AfterAdd(AdvancedSensationStreamInstance instance, AddInfo info) {\r\n" +
-                "    // AddInfo can bei either NEW or REPLACE\r\n" +
-                "    throw new NotImplementedException();\r\n" +
+                "    instance.OnFirstSensationTick += Instance_OnFirstSensationTick;\r\n" +
                 "}\r\n" +
                 "\r\n" +
                 "private void Instance_AfterUpdate(AdvancedSensationStreamInstance instance) {\r\n" +
@@ -417,6 +414,10 @@ namespace OwoAdvancedSensationBuilder.Demo {
                 "\r\n" +
                 "private void Instance_LastCalculationOfCycle(AdvancedSensationStreamInstance instance) {\r\n" +
                 "    throw new NotImplementedException();\r\n" +
+                "}\r\n" +
+                "\r\n" +
+                "private void Inst_OnFirstSensationTick(AdvancedSensationStreamInstance instance, bool firstCycle) {\r\n" +
+                "   throw new NotImplementedException();\r\n" +
                 "}"));
 
             flowFeatures.Controls.Add(new TextSection("Events can help you to schedule changes in the Sensation. In these cases it is likley that you don't " +
@@ -507,15 +508,15 @@ namespace OwoAdvancedSensationBuilder.Demo {
 
         private void interaction_playSensation(params AdvancedSensationStreamInstance[] instances) {
             foreach (AdvancedSensationStreamInstance instance in instances) {
-                instance.AfterAdd += Instance_AfterAdd;
                 instance.AfterRemove += Instance_AfterRemove;
                 AdvancedSensationManager.getInstance().play(instance);
+                Instance_AfterAdd(instance);
             }
         }
 
-        private void Instance_AfterAdd(AdvancedSensationStreamInstance instance, AddInfo info) {
+        private void Instance_AfterAdd(AdvancedSensationStreamInstance instance) {
             if (lbManager.InvokeRequired) {
-                Action doInvoke = delegate { Instance_AfterAdd(instance, info); };
+                Action doInvoke = delegate { Instance_AfterAdd(instance); };
                 lbManager.Invoke(doInvoke);
                 return;
             }
@@ -550,7 +551,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensation(AdvancedSensationStreamInstance instance) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(instance.name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(instance.name)) {
                 AdvancedSensationManager.getInstance().stopSensation(instance.name);
             } else {
                 interaction_playSensation(instance);
@@ -558,7 +559,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensationLoopFinish(AdvancedSensationStreamInstance instance) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(instance.name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(instance.name)) {
                 interaction_stopLooping(instance.name);
             } else {
                 interaction_playSensation(instance);
@@ -566,7 +567,7 @@ namespace OwoAdvancedSensationBuilder.Demo {
         }
 
         private void interaction_toggleSensationSliderLoop(Sensation sensation, string name, TrackBar slider) {
-            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances(true).ContainsKey(name)) {
+            if (AdvancedSensationManager.getInstance().getPlayingSensationInstances().ContainsKey(name)) {
                 interaction_stopLooping(name);
             } else {
                 AdvancedSensationStreamInstance instance = new AdvancedSensationStreamInstance(name, sensation)
